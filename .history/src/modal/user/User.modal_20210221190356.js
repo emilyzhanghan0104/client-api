@@ -1,0 +1,1 @@
+const { userSchema } = require('../user/User.schema');
