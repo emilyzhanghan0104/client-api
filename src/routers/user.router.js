@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const { hashPassword, comparePass } = require("../helpers/bcrypt.helper");
+const {
+  createAccessToken,
+  createRefreshToken,
+} = require("../helpers/jwt.helper");
 const { insertUser, getUserByEmail } = require("../modal/user/User.modal");
 
 router.use(function timeLog(req, res, next) {
@@ -42,7 +46,10 @@ router.post("/login", async (req, res) => {
         message: "email or password incorrect",
       });
     }
-    res.json({ message: "Login Successful!", user });
+    const accessToken = await createAccessToken(user.email);
+    const refreshToken = await createRefreshToken(user.email);
+
+    res.json({ message: "Login Successful!", user, accessToken, refreshToken });
   } catch (error) {
     res.json({ status: "error", message: error.message });
   }
