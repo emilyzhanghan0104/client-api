@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const { hashPassword } = require("../helpers/bcrypt.helper");
-const { insertUser } = require("../modal/user/User.modal");
+const { hashPassword, comparePass } = require("../helpers/bcrypt.helper");
+const { insertUser, getUserByEmail } = require("../modal/user/User.modal");
 
 router.use(function timeLog(req, res, next) {
   console.log("Time: ", Date.now());
   next();
 });
+
+// User sign up router
 router.post("/", async (req, res) => {
   console.log(req.body);
   const { password } = req.body;
@@ -18,6 +20,30 @@ router.post("/", async (req, res) => {
     res.json({ message: "New User Created", data });
   } catch (error) {
     console.log(error);
+    res.json({ status: "error", message: error.message });
+  }
+});
+
+//User sign in router
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.json({ status: "error", message: "invalid form submission" });
+
+  try {
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return res.json({ status: "error", message: "can't find the user" });
+    }
+    const result = await comparePass(password, user.password);
+    if (!result) {
+      return res.json({
+        status: "error",
+        message: "email or password incorrect",
+      });
+    }
+    res.json({ message: "Login Successful!", user });
+  } catch (error) {
     res.json({ status: "error", message: error.message });
   }
 });
