@@ -21,4 +21,7 @@ Content-Type: application/json
 }
 ### Get User profile
 GET  http://localhost:3001/v1/user
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIsImlhdCI6MTYxNDE4NjI2NywiZXhwIjoxNjE0MTg3MTY3fQ.nIQfWKFyxlAwwTdRJP0nV-KwE-Ss1wSfestAQiR24Js
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIsImlhdCI6MTYxNDIwODM1OSwiZXhwIjoxNjE0MjA4Mzc0fQ.WtgenbOXLD4G-n1ZzHzSWL4p_ZnZqBvy-SwFRm5anKs
+### Get refresh token
+GET  http: //localhost:3001/v1/tokens
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIsImlhdCI6MTYxNDIwMzUwNSwiZXhwIjoxNjE2Nzk1NTA1fQ.ffToFJTBtiScd9Foc5wJNDtGgoKbDe6pRNjQmbFK4XU

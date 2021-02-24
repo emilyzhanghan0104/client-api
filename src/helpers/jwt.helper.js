@@ -10,7 +10,7 @@ const createAccessToken = async (payload, id) => {
         data: payload,
       },
       process.env.JWT_ACCESS_SECRET,
-      { expiresIn: "15m" }
+      { expiresIn: "15s" }
     );
     await setJWT(accessToken, id);
     return Promise.resolve(accessToken);
@@ -43,8 +43,19 @@ const verifyAccessToken = (authorization) => {
     return Promise.reject(error);
   }
 };
+
+const verifyRefreshToken = (authorization) => {
+  try {
+    const decoded = jwt.verify(authorization, process.env.JWT_REFRESH_SECRET);
+    return Promise.resolve(decoded);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 module.exports = {
   createAccessToken,
   createRefreshToken,
   verifyAccessToken,
+  verifyRefreshToken,
 };

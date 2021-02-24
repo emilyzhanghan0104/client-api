@@ -22,9 +22,8 @@ router.use(function timeLog(req, res, next) {
 
 // User sign up router
 router.post("/", async (req, res) => {
-  console.log(req.body);
   const { password } = req.body;
-  console.log(password);
+
   try {
     const hashedPassword = await hashPassword(password);
     const data = await insertUser({ ...req.body, password: hashedPassword });
@@ -56,7 +55,7 @@ router.post("/login", async (req, res) => {
     const accessToken = await createAccessToken(user.email, `${user._id}`);
     const refreshToken = await createRefreshToken(user.email, `${user._id}`);
 
-    res.json({ message: "Login Successful!", user, accessToken });
+    res.json({ message: "Login Successful!", user, accessToken, refreshToken });
   } catch (error) {
     res.json({ status: "error", message: error.message });
   }
