@@ -21,7 +21,22 @@ const getUserByEmail = (email) => {
   });
 };
 
+const storeRefreshToken = (_id, token) => {
+  return new Promise((resolve, reject) => {
+    UserSchema.findOneAndUpdate(
+      { _id },
+      {
+        $set: { "refreshJWT.token": token, "refreshJWT.addedAt": Date.now() },
+      },
+      { new: true }
+    )
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
 module.exports = {
   insertUser,
   getUserByEmail,
+  storeRefreshToken,
 };

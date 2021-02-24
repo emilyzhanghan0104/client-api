@@ -6,6 +6,8 @@ const {
   createAccessToken,
   createRefreshToken,
 } = require("../helpers/jwt.helper");
+const { getJWT, setJWT } = require("../helpers/redis.helper");
+
 const { insertUser, getUserByEmail } = require("../modal/user/User.modal");
 
 router.use(function timeLog(req, res, next) {
@@ -46,10 +48,10 @@ router.post("/login", async (req, res) => {
         message: "email or password incorrect",
       });
     }
-    const accessToken = await createAccessToken(user.email);
-    const refreshToken = await createRefreshToken(user.email);
+    const accessToken = await createAccessToken(user.email, `${user._id}`);
+    const refreshToken = await createRefreshToken(user.email, `${user._id}`);
 
-    res.json({ message: "Login Successful!", user, accessToken, refreshToken });
+    res.json({ message: "Login Successful!", user });
   } catch (error) {
     res.json({ status: "error", message: error.message });
   }
