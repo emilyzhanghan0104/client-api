@@ -5,10 +5,15 @@ const { hashPassword, comparePass } = require("../helpers/bcrypt.helper");
 const {
   createAccessToken,
   createRefreshToken,
+  verifyAccessToken,
 } = require("../helpers/jwt.helper");
-const { getJWT, setJWT } = require("../helpers/redis.helper");
 
-const { insertUser, getUserByEmail } = require("../modal/user/User.modal");
+const {
+  insertUser,
+  getUserByEmail,
+  getUserById,
+} = require("../modal/user/User.modal");
+const { authMiddle } = require("../middleware/authorization.middleware");
 
 router.use(function timeLog(req, res, next) {
   console.log("Time: ", Date.now());
@@ -51,10 +56,18 @@ router.post("/login", async (req, res) => {
     const accessToken = await createAccessToken(user.email, `${user._id}`);
     const refreshToken = await createRefreshToken(user.email, `${user._id}`);
 
-    res.json({ message: "Login Successful!", user });
+    res.json({ message: "Login Successful!", user, accessToken });
   } catch (error) {
     res.json({ status: "error", message: error.message });
   }
+});
+
+//Get user details
+router.get("/", authMiddle, async (req, res) => {
+  const _id = req.userId;
+  console.log(_id);
+  const userProfile = await getUserById(_id);
+  res.json({ userProfile });
 });
 
 module.exports = router;

@@ -21,6 +21,17 @@ const getUserByEmail = (email) => {
   });
 };
 
+const getUserById = (_id) => {
+  return new Promise((resolve, reject) => {
+    UserSchema.findOne({ _id }, (error, data) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(data);
+    });
+  });
+};
+
 const storeRefreshToken = (_id, token) => {
   return new Promise((resolve, reject) => {
     UserSchema.findOneAndUpdate(
@@ -38,5 +49,6 @@ const storeRefreshToken = (_id, token) => {
 module.exports = {
   insertUser,
   getUserByEmail,
+  getUserById,
   storeRefreshToken,
 };

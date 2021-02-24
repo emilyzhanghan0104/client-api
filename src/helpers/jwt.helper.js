@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { PromiseProvider } = require("mongoose");
 const { getJWT, setJWT } = require("../helpers/redis.helper");
 const { storeRefreshToken } = require("../modal/user/User.modal");
 
@@ -34,7 +35,16 @@ const createRefreshToken = async (payload, id) => {
   }
 };
 
+const verifyAccessToken = (authorization) => {
+  try {
+    const decoded = jwt.verify(authorization, process.env.JWT_ACCESS_SECRET);
+    return Promise.resolve(decoded);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 module.exports = {
   createAccessToken,
   createRefreshToken,
+  verifyAccessToken,
 };

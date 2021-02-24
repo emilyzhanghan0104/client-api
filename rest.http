@@ -7,15 +7,18 @@ Content-Type: application/json
     "company": "fsdfsdf",
     "address": "vfdvfdvfd",
     "phone": "343243243",
-    "email": "fdwfderf@fferfrf",
-    "password": "feerfrewfdg"
+    "email": "314@qq.com",
+    "password": "123"
 }
 
 ### User sign in endpoint
 POST http://localhost:3001/v1/user/login
 Content-Type: application/json
 
-{ 
-    "email": "fdwfderf@fferfrf",
-    "password": "feerfrewfdg"
+{
+    "email": "314@qq.com",
+    "password": "123"
 }
+### Get User profile
+GET  http://localhost:3001/v1/user
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIsImlhdCI6MTYxNDE4NjI2NywiZXhwIjoxNjE0MTg3MTY3fQ.nIQfWKFyxlAwwTdRJP0nV-KwE-Ss1wSfestAQiR24Js
