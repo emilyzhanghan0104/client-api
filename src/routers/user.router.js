@@ -5,7 +5,6 @@ const { hashPassword, comparePass } = require("../helpers/bcrypt.helper");
 const {
   createAccessToken,
   createRefreshToken,
-  verifyAccessToken,
 } = require("../helpers/jwt.helper");
 
 const {
@@ -13,6 +12,8 @@ const {
   getUserByEmail,
   getUserById,
 } = require("../modal/user/User.modal");
+
+const { setResetPin } = require("../modal/restPin/ResetPin.modal");
 const { authMiddle } = require("../middleware/authorization.middleware");
 
 router.use(function timeLog(req, res, next) {
@@ -69,4 +70,14 @@ router.get("/", authMiddle, async (req, res) => {
   res.json({ userProfile });
 });
 
+//Reset password
+router.post("/reset-password", async (req, res) => {
+  const { email } = req.body;
+  const user = await getUserByEmail(email);
+  if (!user || !user._id) {
+    return res.json({ status: "error", message: "email is invalid" });
+  }
+  const resetPin = await setResetPin(email);
+  return res.json({ resetPin });
+});
 module.exports = router;

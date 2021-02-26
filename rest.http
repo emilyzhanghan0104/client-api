@@ -25,3 +25,11 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIs
 ### Get refresh token
 GET  http: //localhost:3001/v1/tokens
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIsImlhdCI6MTYxNDIwMzUwNSwiZXhwIjoxNjE2Nzk1NTA1fQ.ffToFJTBtiScd9Foc5wJNDtGgoKbDe6pRNjQmbFK4XU
+
+### Password reset endpoints
+POST http://localhost:3001/v1/user/reset-password
+Content-Type: application/json
+
+{
+    "email": "314@qq.com"
+}
