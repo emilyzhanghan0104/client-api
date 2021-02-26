@@ -15,6 +15,7 @@ const {
 
 const { setResetPin } = require("../modal/restPin/ResetPin.modal");
 const { authMiddle } = require("../middleware/authorization.middleware");
+const { emailProcessor } = require("../helpers/email.helper");
 
 router.use(function timeLog(req, res, next) {
   console.log("Time: ", Date.now());
@@ -77,7 +78,18 @@ router.post("/reset-password", async (req, res) => {
   if (!user || !user._id) {
     return res.json({ status: "error", message: "email is invalid" });
   }
-  const resetPin = await setResetPin(email);
-  return res.json({ resetPin });
+  try {
+    const resetPin = await setResetPin(email);
+
+    const result = await emailProcessor(email, resetPin.pin);
+    if (result && result.messageId) {
+      return res.json({
+        status: "success",
+        message: "reset pin email has been sent",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", message: error.message });
+  }
 });
 module.exports = router;
