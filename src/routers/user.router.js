@@ -11,11 +11,16 @@ const {
   insertUser,
   getUserByEmail,
   getUserById,
+  updatePassword,
 } = require("../modal/user/User.modal");
 
-const { setResetPin } = require("../modal/restPin/ResetPin.modal");
+const {
+  setResetPin,
+  getPinByEmailPin,
+} = require("../modal/restPin/ResetPin.modal");
 const { authMiddle } = require("../middleware/authorization.middleware");
 const { emailProcessor } = require("../helpers/email.helper");
+const { checkExpiry } = require("../utils/checkExpiry");
 
 router.use(function timeLog(req, res, next) {
   console.log("Time: ", Date.now());
@@ -87,6 +92,34 @@ router.post("/reset-password", async (req, res) => {
         status: "success",
         message: "reset pin email has been sent",
       });
+    }
+  } catch (error) {
+    return res.json({ status: "error", message: error.message });
+  }
+});
+
+router.patch("/reset-password", async (req, res) => {
+  const { email, pin, password } = req.body;
+
+  if (!email || !pin || !password) {
+    return res.json({ status: "error", message: "info is incomplete" });
+  }
+  try {
+    const getPin = await getPinByEmailPin(email, pin);
+
+    if (getPin._id) {
+      const addDate = getPin.addedAt;
+
+      const expired = checkExpiry(
+        addDate,
+        parseInt(process.env.RESET_PIN_EXP_DAY)
+      );
+      if (expired) {
+        return res.json({ status: "error", message: "pin has expired" });
+      }
+
+      const result = await updatePassword(email, password);
+      return res.json({ status: "success", result });
     }
   } catch (error) {
     return res.json({ status: "error", message: error.message });

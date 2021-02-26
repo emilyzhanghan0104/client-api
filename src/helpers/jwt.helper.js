@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { PromiseProvider } = require("mongoose");
+
 const { getJWT, setJWT } = require("../helpers/redis.helper");
 const { storeRefreshToken } = require("../modal/user/User.modal");
 

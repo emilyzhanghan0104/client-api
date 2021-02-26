@@ -16,6 +16,19 @@ const setResetPin = (email) => {
   });
 };
 
+const getPinByEmailPin = (email, pin) => {
+  return new Promise((resolve, reject) => {
+    ResetPinSchema.findOne({ email, pin }, (error, data) => {
+      if (error) {
+        console.log(error);
+        reject(error);
+      }
+      resolve(data);
+    });
+  });
+};
+
 module.exports = {
   setResetPin,
+  getPinByEmailPin,
 };

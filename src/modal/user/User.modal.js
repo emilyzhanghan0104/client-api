@@ -1,5 +1,6 @@
 const { Promise } = require("mongoose");
 const { UserSchema } = require("../user/User.schema");
+const { hashPassword } = require("../../helpers/bcrypt.helper");
 
 const insertUser = (userObj) => {
   return new Promise((resolve, reject) => {
@@ -46,9 +47,25 @@ const storeRefreshToken = (_id, token) => {
   });
 };
 
+const updatePassword = async (email, password) => {
+  const hashedPass = await hashPassword(password);
+  return new Promise((resolve, reject) => {
+    UserSchema.findOneAndUpdate(
+      { email },
+      {
+        $set: { password: hashedPass },
+      },
+      { new: true }
+    )
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
+  });
+};
+
 module.exports = {
   insertUser,
   getUserByEmail,
   getUserById,
   storeRefreshToken,
+  updatePassword,
 };
