@@ -21,7 +21,7 @@ router.all("/", async (req, res) => {
   const dbRefreshToken = userProfile.refreshJWT.token;
 
   tokenExp = tokenExp.setDate(
-    tokenExp.getDate() + +process.env.JWT_REFRESH_SECRET_EXP_DAY
+    tokenExp.getDate() + parseInt(process.env.JWT_REFRESH_SECRET_EXP_DAY)
   );
 
   const today = new Date();

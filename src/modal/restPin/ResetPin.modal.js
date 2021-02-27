@@ -28,7 +28,16 @@ const getPinByEmailPin = (email, pin) => {
   });
 };
 
+const deletePin = (email, pin) => {
+  ResetPinSchema.findOneAndDelete({ email, pin }, (error, data) => {
+    if (error) {
+      throw new Error(error.message);
+    }
+  });
+};
+
 module.exports = {
   setResetPin,
   getPinByEmailPin,
+  deletePin,
 };

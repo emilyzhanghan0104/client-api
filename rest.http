@@ -40,6 +40,7 @@ Content-Type: application/json
 
 {
     "email": "314@qq.com",
-    "pin": "179469",
+    "pin": "010768",
     "password": "1234562"
+    
 }

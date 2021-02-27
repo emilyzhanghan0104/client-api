@@ -17,8 +17,14 @@ const {
 const {
   setResetPin,
   getPinByEmailPin,
+  deletePin,
 } = require("../modal/restPin/ResetPin.modal");
 const { authMiddle } = require("../middleware/authorization.middleware");
+const {
+  emailPassPinValidator,
+  emailValidator,
+} = require("../middleware/formValidation.middleware");
+
 const { emailProcessor } = require("../helpers/email.helper");
 const { checkExpiry } = require("../utils/checkExpiry");
 
@@ -77,7 +83,7 @@ router.get("/", authMiddle, async (req, res) => {
 });
 
 //Reset password
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", emailValidator, async (req, res) => {
   const { email } = req.body;
   const user = await getUserByEmail(email);
   if (!user || !user._id) {
@@ -86,7 +92,11 @@ router.post("/reset-password", async (req, res) => {
   try {
     const resetPin = await setResetPin(email);
 
-    const result = await emailProcessor(email, resetPin.pin);
+    const result = await emailProcessor({
+      email,
+      pin: resetPin.pin,
+      type: "request-new-pass",
+    });
     if (result && result.messageId) {
       return res.json({
         status: "success",
@@ -98,7 +108,7 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
-router.patch("/reset-password", async (req, res) => {
+router.patch("/reset-password", emailPassPinValidator, async (req, res) => {
   const { email, pin, password } = req.body;
 
   if (!email || !pin || !password) {
@@ -118,8 +128,18 @@ router.patch("/reset-password", async (req, res) => {
         return res.json({ status: "error", message: "pin has expired" });
       }
 
-      const result = await updatePassword(email, password);
-      return res.json({ status: "success", result });
+      const user = await updatePassword(email, password);
+      if (user._id) {
+        const result = await emailProcessor({
+          email,
+          type: "password-update-success",
+        });
+        deletePin(email, pin);
+        return res.json({
+          status: "success",
+          message: "Your password has been reset successfully!",
+        });
+      }
     }
   } catch (error) {
     return res.json({ status: "error", message: error.message });
