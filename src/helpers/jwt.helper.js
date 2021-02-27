@@ -10,7 +10,7 @@ const createAccessToken = async (payload, id) => {
         data: payload,
       },
       process.env.JWT_ACCESS_SECRET,
-      { expiresIn: "15s" }
+      { expiresIn: "15m" }
     );
     await setJWT(accessToken, id);
     return Promise.resolve(accessToken);

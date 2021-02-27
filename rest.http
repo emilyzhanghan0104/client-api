@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
     "email": "314@qq.com",
-    "password": "123"
+    "password": "1234562"
 }
 ### Get User profile
 GET  http://localhost:3001/v1/user
@@ -44,3 +44,6 @@ Content-Type: application/json
     "password": "1234562"
     
 }
+### User logout
+DELETE http://localhost:3001/v1/user/logout
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMzE0QHFxLmNvbSIsImlhdCI6MTYxNDQ2ODYzOCwiZXhwIjoxNjE0NDY5NTM4fQ.YbXHbNbMvmENuWoujWuBSysJ7aDBw0FzZIasQwJH6oM

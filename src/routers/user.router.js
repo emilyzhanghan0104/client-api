@@ -12,6 +12,7 @@ const {
   getUserByEmail,
   getUserById,
   updatePassword,
+  storeRefreshToken,
 } = require("../modal/user/User.modal");
 
 const {
@@ -27,6 +28,7 @@ const {
 
 const { emailProcessor } = require("../helpers/email.helper");
 const { checkExpiry } = require("../utils/checkExpiry");
+const { deleteJWT } = require("../helpers/redis.helper");
 
 router.use(function timeLog(req, res, next) {
   console.log("Time: ", Date.now());
@@ -144,5 +146,26 @@ router.patch("/reset-password", emailPassPinValidator, async (req, res) => {
   } catch (error) {
     return res.json({ status: "error", message: error.message });
   }
+});
+
+router.delete("/logout", authMiddle, async (req, res) => {
+  const { authorization } = req.headers;
+  const _id = req.userId;
+  try {
+    deleteJWT(authorization);
+    const user = await storeRefreshToken(_id, "");
+    if (user._id) {
+      return res.json({
+        status: "success",
+        message: "You successfully log out!",
+      });
+    }
+  } catch (error) {
+    return res.json({ status: "error", message: error.message });
+  }
+  return res.json({
+    status: "error",
+    message: "logout failed, plz try again later",
+  });
 });
 module.exports = router;
